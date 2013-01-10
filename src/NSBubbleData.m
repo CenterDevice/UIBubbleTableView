@@ -20,6 +20,12 @@
 @synthesize view = _view;
 @synthesize insets = _insets;
 @synthesize avatar = _avatar;
+@synthesize author = _author;
+
+
+-(NSString *)description {
+	return [NSString stringWithFormat:@"Author : %@; Date : %@", _author, _date];
+}
 
 #pragma mark - Lifecycle
 
@@ -30,6 +36,8 @@
 	_date = nil;
     [_view release];
     _view = nil;
+	[_author release];
+	_author = nil;
     
     self.avatar = nil;
 
@@ -49,6 +57,53 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 #else
     return [[NSBubbleData alloc] initWithText:text date:date type:type];
 #endif    
+}
+
++ (id)dataWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type {
+#if !__has_feature(objc_arc)
+	return [[[NSBubbleData alloc] initWithText:text date:date author:author type:type] autorelease];
+#else
+	return [[NSBubbleData alloc] initWithText:text date:date author:author type:type];
+#endif
+}
+
+- (id)initWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type {
+    UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    CGSize size = [(text ? text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(220, 9999) lineBreakMode:UILineBreakModeWordWrap];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    label.numberOfLines = 0;
+    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.text = (text ? text : @"");
+    label.font = font;
+    label.backgroundColor = [UIColor clearColor];
+    
+#if !__has_feature(objc_arc)
+    [label autorelease];
+#endif
+    
+    UIEdgeInsets insets = (type == BubbleTypeMine ? textInsetsMine : textInsetsSomeone);
+	return [self initWithView:label date:date author:author type:type insets:insets];
+}
+
+
+- (id)initWithView:(UIView *)view date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type insets:(UIEdgeInsets)insets {
+    self = [super init];
+    if (self)
+    {
+#if !__has_feature(objc_arc)
+        _view = [view retain];
+        _date = [date retain];
+		_author = [author retain];
+#else
+        _view = view;
+        _date = date;
+		_author = author;
+#endif
+        _type = type;
+        _insets = insets;
+    }
+    return self;
 }
 
 - (id)initWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type

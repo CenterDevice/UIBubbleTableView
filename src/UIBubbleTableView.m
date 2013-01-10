@@ -42,7 +42,7 @@
     
     // UIBubbleTableView default properties
     
-    self.snapInterval = 120;
+   // self.snapInterval = 10;
     self.typingBubble = NSBubbleTypingTypeNobody;
 }
 
@@ -132,18 +132,18 @@
         {
             NSBubbleData *data = (NSBubbleData *)[bubbleData objectAtIndex:i];
             
-            if ([data.date timeIntervalSinceDate:last] > self.snapInterval)
-            {
+//            if ([data.date timeIntervalSinceDate:last] > self.snapInterval)
+//            {
 #if !__has_feature(objc_arc)
                 currentSection = [[[NSMutableArray alloc] init] autorelease];
 #else
                 currentSection = [[NSMutableArray alloc] init];
 #endif
                 [self.bubbleSection addObject:currentSection];
-            }
+//            }
             
             [currentSection addObject:data];
-            last = data.date;
+  //          last = data.date;
         }
     }
     
@@ -203,7 +203,7 @@
         return cell;
     }
 
-    // Header with date and time
+    // Header with date and time and author
     if (indexPath.row == 0)
     {
         static NSString *cellId = @"tblBubbleHeaderCell";
@@ -212,8 +212,8 @@
         
         if (cell == nil) cell = [[UIBubbleHeaderTableViewCell alloc] init];
 
-        cell.date = data.date;
-       
+        //cell.date = data.date;
+		[cell setAuthor:data.author andDate:data.date];
         return cell;
     }
     

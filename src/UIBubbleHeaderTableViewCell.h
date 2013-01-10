@@ -11,7 +11,9 @@
 @interface UIBubbleHeaderTableViewCell : UITableViewCell
 
 + (CGFloat)height;
+- (void)setAuthor:(NSString *)author andDate:(NSDate *)date;
 
 @property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) NSString *author;
 
 @end
