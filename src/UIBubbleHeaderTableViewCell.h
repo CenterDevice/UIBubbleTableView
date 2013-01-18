@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BubbleTypes.h"
 
 @interface UIBubbleHeaderTableViewCell : UITableViewCell
 
 + (CGFloat)height;
-- (void)setAuthor:(NSString *)author andDate:(NSDate *)date;
+- (void)setAuthor:(NSString *)author andDate:(NSDate *)date type:(NSBubbleType)type;
 
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSString *author;

@@ -9,12 +9,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef enum _NSBubbleType
-{
-    BubbleTypeMine = 0,
-    BubbleTypeSomeoneElse = 1
-} NSBubbleType;
+#import "BubbleTypes.h"
+#import "Comment.h"
 
 @interface NSBubbleData : NSObject
 
@@ -24,6 +20,7 @@ typedef enum _NSBubbleType
 @property (readonly, nonatomic, strong) UIView *view;
 @property (readonly, nonatomic) UIEdgeInsets insets;
 @property (nonatomic, strong) UIImage *avatar;
+@property (nonatomic, strong) Comment* comment;
 
 - (id)initWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type;
 + (id)dataWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type;
@@ -36,5 +33,6 @@ typedef enum _NSBubbleType
 - (id)initWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type;
 + (id)dataWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type;
 - (id)initWithView:(UIView *)view date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type insets:(UIEdgeInsets)insets;
+- (id)dataWithComment:(Comment *)comment type:(NSBubbleType)type;
 
 @end

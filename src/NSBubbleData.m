@@ -21,6 +21,7 @@
 @synthesize insets = _insets;
 @synthesize avatar = _avatar;
 @synthesize author = _author;
+@synthesize comment = _comment;
 
 
 -(NSString *)description {
@@ -65,6 +66,44 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 #else
 	return [[NSBubbleData alloc] initWithText:text date:date author:author type:type];
 #endif
+}
+
+- (id)dataWithComment:(Comment *)aComment type:(NSBubbleType)type {
+	if (type == BubbleTypeMine) {
+		aComment.myComment = YES;
+	}else {
+		aComment.myComment = NO;
+	}
+	return [self initWithComment:aComment type:type];
+}
+
+-(id)initWithComment:(Comment *)comment type:(NSBubbleType)type {
+    UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(220, 9999) lineBreakMode:UILineBreakModeWordWrap];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    label.numberOfLines = 0;
+    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.text = (comment.text ? comment.text : @"");
+    label.font = font;
+    label.backgroundColor = [UIColor clearColor];
+    
+    UIEdgeInsets insets = (type == BubbleTypeMine ? textInsetsMine : textInsetsSomeone);
+	return [self initWithView:label comment:comment type:type insets:insets];
+}
+
+- (id)initWithView:(UIView *)view comment:(Comment *)comment type:(NSBubbleType)type insets:(UIEdgeInsets)insets {
+	self = [super init];
+    if (self)
+    {
+        _view = view;
+        _date = [self lastDateOfComment:comment];
+		_author = comment.author.name;
+		_comment = comment;
+        _type = type;
+        _insets = insets;
+    }
+    return self;
 }
 
 - (id)initWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type {
@@ -174,6 +213,7 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
 #endif    
 }
 
+
 - (id)initWithView:(UIView *)view date:(NSDate *)date type:(NSBubbleType)type insets:(UIEdgeInsets)insets  
 {
     self = [super init];
@@ -190,6 +230,23 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
         _insets = insets;
     }
     return self;
+}
+
+
+//compare creation and edit date of the comment and return the last one
+-(NSDate *)lastDateOfComment:(Comment *)comment {
+	NSDate* creationDate = comment.creationDate;
+	NSDate* editDate = comment.editDate;
+	switch ([creationDate compare:editDate]) {
+		case NSOrderedAscending:
+			comment.editDate = editDate;
+			return editDate;
+			break;
+		default:
+			comment.creationDate = creationDate;
+			return creationDate;
+			break;
+	}
 }
 
 @end

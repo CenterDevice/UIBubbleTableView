@@ -12,6 +12,9 @@
 #import "NSBubbleData.h"
 #import "UIBubbleHeaderTableViewCell.h"
 #import "UIBubbleTypingTableViewCell.h"
+#import "CDContext.h"
+#import "User.h"
+#import "Comment.h"
 
 @interface UIBubbleTableView ()
 
@@ -26,6 +29,7 @@
 @synthesize bubbleSection = _bubbleSection;
 @synthesize typingBubble = _typingBubble;
 @synthesize showAvatars = _showAvatars;
+@synthesize comments = _comments;
 
 #pragma mark - Initializators
 
@@ -36,14 +40,19 @@
     self.backgroundColor = [UIColor clearColor];
     self.separatorStyle = UITableViewCellSeparatorStyleNone;
     assert(self.style == UITableViewStylePlain);
-    
+	
     self.delegate = self;
     self.dataSource = self;
     
     // UIBubbleTableView default properties
     
-   // self.snapInterval = 10;
     self.typingBubble = NSBubbleTypingTypeNobody;
+	
+	//add padding at bottom after last comment
+	CGFloat bottomPadding = 44;
+	UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, bottomPadding, 0);
+	[self setContentInset:insets];
+	
 }
 
 - (id)init
@@ -74,15 +83,6 @@
     return self;
 }
 
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-    [_bubbleSection release];
-	_bubbleSection = nil;
-	_bubbleDataSource = nil;
-    [super dealloc];
-}
-#endif
 
 #pragma mark - Override
 
@@ -96,19 +96,12 @@
     
     // Loading new data
     int count = 0;
-#if !__has_feature(objc_arc)
-    self.bubbleSection = [[[NSMutableArray alloc] init] autorelease];
-#else
+
     self.bubbleSection = [[NSMutableArray alloc] init];
-#endif
     
     if (self.bubbleDataSource && (count = [self.bubbleDataSource rowsForBubbleTable:self]) > 0)
     {
-#if !__has_feature(objc_arc)
-        NSMutableArray *bubbleData = [[[NSMutableArray alloc] initWithCapacity:count] autorelease];
-#else
         NSMutableArray *bubbleData = [[NSMutableArray alloc] initWithCapacity:count];
-#endif
         
         for (int i = 0; i < count; i++)
         {
@@ -125,25 +118,16 @@
              return [bubbleData1.date compare:bubbleData2.date];            
          }];
         
-        NSDate *last = [NSDate dateWithTimeIntervalSince1970:0];
         NSMutableArray *currentSection = nil;
         
         for (int i = 0; i < count; i++)
         {
             NSBubbleData *data = (NSBubbleData *)[bubbleData objectAtIndex:i];
-            
-//            if ([data.date timeIntervalSinceDate:last] > self.snapInterval)
-//            {
-#if !__has_feature(objc_arc)
-                currentSection = [[[NSMutableArray alloc] init] autorelease];
-#else
+
                 currentSection = [[NSMutableArray alloc] init];
-#endif
                 [self.bubbleSection addObject:currentSection];
-//            }
             
             [currentSection addObject:data];
-  //          last = data.date;
         }
     }
     
@@ -199,7 +183,7 @@
 
         cell.type = self.typingBubble;
         cell.showAvatar = self.showAvatars;
-        
+        cell.shouldIndentWhileEditing = NO;
         return cell;
     }
 
@@ -212,8 +196,9 @@
         
         if (cell == nil) cell = [[UIBubbleHeaderTableViewCell alloc] init];
 
-        //cell.date = data.date;
-		[cell setAuthor:data.author andDate:data.date];
+		[cell setAuthor:data.author andDate:data.date type:data.type];
+		cell.textLabel.textAlignment = UITextAlignmentCenter;
+        cell.shouldIndentWhileEditing = NO;
         return cell;
     }
     
@@ -222,12 +207,52 @@
     UIBubbleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:indexPath.row - 1];
     
-    if (cell == nil) cell = [[UIBubbleTableViewCell alloc] init];
+    if (cell == nil) {
+		cell = [[UIBubbleTableViewCell alloc] init];
+	}
     
     cell.data = data;
     cell.showAvatar = self.showAvatars;
-    
+	cell.shouldIndentWhileEditing = NO;
     return cell;
 }
+
+
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+	if(indexPath.row == 0) {
+		return NO;
+	}
+    NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:indexPath.row - 1];
+	if (data.comment.isMyComment) {
+		return YES;
+	}
+	return NO;
+}
+
+
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+		[self.bubbleSection removeObjectAtIndex:indexPath.section];
+		[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+		[self.bubbleDataSource updateDataSource:indexPath]; //indexPath.section is bubble with comment which is deleted
+    }
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }
+}
+
+
+//hide delete button when user enters edit mode
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+//	return UITableViewCellAccessoryNone;
+//}
+
 
 @end
