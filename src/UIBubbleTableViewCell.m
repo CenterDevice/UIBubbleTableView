@@ -102,31 +102,4 @@
 }
 
 
--(void)layoutSubviews {
-	[super layoutSubviews];
-	NSLog(@"self.contentView : %@", self.contentView);
-//	self.deleteBtn.frame = CGRectMake(88, 0, 60, 60);
-}
-
-
-- (void)willTransitionToState:(UITableViewCellStateMask)state {
-	
-    [super willTransitionToState:state];
-	
-    if ((state & UITableViewCellStateShowingEditControlMask) == UITableViewCellStateShowingEditControlMask) {
-		
-        for (UIView *subview in self.subviews) {
-			
-          //  if ([NSStringFromClass([subview class]) isEqualToString:@"UITableViewCellDeleteConfirmationControl"]) {
-				
-                subview.hidden = NO;
-               // subview.alpha = 0.0;
-				[UIView beginAnimations:@"anim" context:nil];
-				subview.alpha = 1.0;
-				[UIView commitAnimations];
-           // }
-        }
-    }
-}
-
 @end

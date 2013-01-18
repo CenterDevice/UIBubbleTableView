@@ -136,6 +136,11 @@
 
 #pragma mark - UITableViewDelegate implementation
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+	NSLog(@"disclosure button tapped");
+	[self.bubbleDataSource editExistingCommentForIndexPath:indexPath];
+}
+
 #pragma mark - UITableViewDataSource implementation
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -214,6 +219,7 @@
     cell.data = data;
     cell.showAvatar = self.showAvatars;
 	cell.shouldIndentWhileEditing = NO;
+	cell.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     return cell;
 }
 
@@ -247,12 +253,6 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
 }
-
-
-//hide delete button when user enters edit mode
-//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	return UITableViewCellAccessoryNone;
-//}
 
 
 @end
