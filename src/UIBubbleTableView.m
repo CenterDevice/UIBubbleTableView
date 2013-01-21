@@ -137,7 +137,6 @@
 #pragma mark - UITableViewDelegate implementation
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-	NSLog(@"disclosure button tapped");
 	[self.bubbleDataSource editExistingCommentForIndexPath:indexPath];
 }
 

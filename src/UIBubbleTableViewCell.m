@@ -17,8 +17,6 @@
 @property (nonatomic, retain) UIView *customView;
 @property (nonatomic, retain) UIImageView *bubbleImage;
 @property (nonatomic, retain) UIImageView *avatarImage;
-@property (nonatomic, retain) UIButton* deleteBtn;
-@property (nonatomic, retain) UIImage* deleteImg;
 
 - (void) setupInternalData;
 
@@ -38,17 +36,6 @@
 	[self setupInternalData];
 }
 
-
-#if !__has_feature(objc_arc)
-- (void) dealloc
-{
-    self.data = nil;
-    self.customView = nil;
-    self.bubbleImage = nil;
-    self.avatarImage = nil;
-    [super dealloc];
-}
-#endif
 
 - (void)setDataInternal:(NSBubbleData *)value
 {
@@ -91,14 +78,6 @@
 	self.bubbleImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
     [self.contentView addSubview:self.bubbleImage];
 	[self.contentView bringSubviewToFront:self.customView];
-	self.deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-	UIImage* deleteImg = [UIImage imageNamed:@"deleteBtn.png"];
-	_deleteBtn.frame = CGRectMake(-100, 0, deleteImg.size.width, deleteImg.size.height);
-	[_deleteBtn setImage:deleteImg forState:UIControlStateNormal];
-	_deleteBtn.contentMode = UIViewContentModeScaleToFill;
-	[_deleteBtn addTarget:self action:@selector(deleteComment) forControlEvents:UIControlEventTouchUpInside];
-	_deleteBtn.hidden = YES;
-	[self.contentView addSubview:_deleteBtn];
 }
 
 
