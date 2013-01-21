@@ -210,11 +210,9 @@
     static NSString *cellId = @"tblBubbleCell";
     UIBubbleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:indexPath.row - 1];
-    
     if (cell == nil) {
-		cell = [[UIBubbleTableViewCell alloc] init];
+		cell = [[UIBubbleTableViewCell alloc] initWithData:data];
 	}
-    
     cell.data = data;
     cell.showAvatar = self.showAvatars;
 	cell.shouldIndentWhileEditing = NO;
@@ -247,9 +245,6 @@
 		[self.bubbleSection removeObjectAtIndex:indexPath.section];
 		[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
 		[self.bubbleDataSource updateDataSource:indexPath]; //indexPath.section is bubble with comment which is deleted
-    }
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
 }
 

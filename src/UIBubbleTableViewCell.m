@@ -33,7 +33,6 @@
 - (void)setFrame:(CGRect)frame
 {
     [super setFrame:frame];
-	[self setupInternalData];
 }
 
 
@@ -55,12 +54,19 @@
     
     CGFloat width = self.data.view.frame.size.width;
     CGFloat height = self.data.view.frame.size.height;
-	if (self.contentView.frame.origin.x >= 32) { // ugly fix when one comment is deleted all bubbles on the right hand side are moved from view to right
-		self.contentView.frame = CGRectMake(0, 0, self.contentView.frame.size.width + self.contentView.frame.origin.x, self.contentView.frame.size.height);
+	//THIS STUFF SHOULD BE FIXED 
+	if ([self.superview isKindOfClass:[UITableView class]]) {
+		UITableView* tableView = (UITableView* )self.superview;
+		if (tableView.isEditing) {
+			if (self.data.comment.isMyComment) {
+				self.contentView.frame = CGRectMake(-35, 0, self.contentView.frame.size.width, self.contentView.frame.size.height);
+			}
+		}
 	}
     CGFloat x = (type == BubbleTypeSomeoneElse) ? 0 : self.frame.size.width - width - self.data.insets.left - self.data.insets.right;
     CGFloat y = 0;
     [self.customView removeFromSuperview];
+	
     self.customView = self.data.view;
     self.customView.frame = CGRectMake(x + self.data.insets.left, y + self.data.insets.top, width, height);
 	self.customView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
@@ -76,9 +82,27 @@
 
     self.bubbleImage.frame = CGRectMake(x, y, width + self.data.insets.left + self.data.insets.right, height + self.data.insets.top + self.data.insets.bottom);
 	self.bubbleImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+	self.contentView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
     [self.contentView addSubview:self.bubbleImage];
 	[self.contentView bringSubviewToFront:self.customView];
 }
 
+-(id)initWithData:(NSBubbleData *)aData {
+	self = [super init];
+	if (self) {
+		self.data = aData;
+	}
+	return self;
+}
+
+- (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
+	[self setupInternalData];
+}
+
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+}
 
 @end

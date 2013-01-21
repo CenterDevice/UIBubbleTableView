@@ -130,15 +130,9 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
     self = [super init];
     if (self)
     {
-#if !__has_feature(objc_arc)
-        _view = [view retain];
-        _date = [date retain];
-		_author = [author retain];
-#else
         _view = view;
         _date = date;
 		_author = author;
-#endif
         _type = type;
         _insets = insets;
     }
