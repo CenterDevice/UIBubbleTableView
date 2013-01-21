@@ -24,8 +24,9 @@
 {
     return 28.0;
 }
-
+#ifndef DATE_FORMAT_TEMPLATE_DATE_AND_TIME
 #define DATE_FORMAT_TEMPLATE_DATE_AND_TIME @"dd.MM.yyyy j:mm"
+#endif
 
 - (void)setAuthor:(NSString *)authorName andDate:(NSDate *)date type:(NSBubbleType)type{
 	self.author = authorName;
@@ -34,16 +35,16 @@
     dateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:DATE_FORMAT_TEMPLATE_DATE_AND_TIME
                                                                     options:0
                                                                      locale:[NSLocale autoupdatingCurrentLocale]];
-    NSString *text = [dateFormatter stringFromDate:self.date];
-	NSString* onDateText = CDLocalizedStringFromTable(@"buble.header.cell.part.of.label.text", @"UIBubbleHeaderTableViewCell", @"Adverb used in label text when comment is created or edited.");
+    NSString * dateString = [dateFormatter stringFromDate:self.date];
+	NSString* commentHeader = [NSString stringWithFormat:CDLocalizedStringFromTable(@"bubble.header.cell.text", @"UIBubbleHeaderTableViewCell", @"Heading for a particular comment. Param 1 is the author, param 2 the formatted addition/edit date."), self.author, dateString];
     if (self.label)
     {
-        self.label.text = [NSString stringWithFormat:@"%@ %@ %@", self.author, onDateText, text];
+        self.label.text = commentHeader;
         return;
     }
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 	self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [UIBubbleHeaderTableViewCell height])];
-	self.label.text = [NSString stringWithFormat:@"%@ %@ %@", self.author, onDateText, text];
+	self.label.text = commentHeader;
     self.label.font = [UIFont boldSystemFontOfSize:12];
     self.label.textAlignment = UITextAlignmentCenter;
     self.label.shadowOffset = CGSizeMake(0, 1);
