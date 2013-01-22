@@ -137,8 +137,10 @@
 #pragma mark - UITableViewDelegate implementation
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-	[self.bubbleDataSource editExistingCommentForIndexPath:indexPath];
+	NSBubbleData* bubleData = self.bubbleSection[indexPath.section][0];
+	[self.bubbleDataSource editExistingCommentForBubble:bubleData];
 }
+
 
 #pragma mark - UITableViewDataSource implementation
 
@@ -242,9 +244,10 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
+		NSBubbleData* bubleData = self.bubbleSection[indexPath.section][0];
 		[self.bubbleSection removeObjectAtIndex:indexPath.section];
 		[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
-		[self.bubbleDataSource updateDataSource:indexPath]; //indexPath.section is bubble with comment which is deleted
+		[self.bubbleDataSource updateDataSource:bubleData]; 
     }
 }
 

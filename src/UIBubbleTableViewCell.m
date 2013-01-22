@@ -54,8 +54,7 @@
     
     CGFloat width = self.data.view.frame.size.width;
     CGFloat height = self.data.view.frame.size.height;
-	//THIS STUFF SHOULD BE FIXED 
-	if ([self.superview isKindOfClass:[UITableView class]]) {
+	if ([self.superview isKindOfClass:[UITableView class]]) { // ugly hack to fix the problem when bubbles run away from screen on the right hand side while deleting and editing the comment
 		UITableView* tableView = (UITableView* )self.superview;
 		if (tableView.isEditing) {
 			if (self.data.comment.isMyComment) {

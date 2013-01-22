@@ -25,7 +25,7 @@
 
 
 -(NSString *)description {
-	return [NSString stringWithFormat:@"Author : %@; Date : %@", _author, _date];
+	return [NSString stringWithFormat:@"comment id : %@, text : %@", _comment.commentId, _comment.text];
 }
 
 #pragma mark - Lifecycle
