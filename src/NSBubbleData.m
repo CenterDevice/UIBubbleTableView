@@ -98,7 +98,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
     if (self)
     {
         _view = view;
-        _date = [self lastDateOfComment:comment];
+        _date = comment.creationDate;
 		_author = comment.author.name;
 		_comment = comment;
         _type = type;
@@ -225,23 +225,6 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
         _insets = insets;
     }
     return self;
-}
-
-
-//compare creation and edit date of the comment and return the last one
--(NSDate *)lastDateOfComment:(Comment *)comment {
-	NSDate* creationDate = comment.creationDate;
-	NSDate* editDate = comment.editDate;
-	switch ([creationDate compare:editDate]) {
-		case NSOrderedAscending:
-			comment.editDate = editDate;
-			return editDate;
-			break;
-		default:
-			comment.creationDate = creationDate;
-			return creationDate;
-			break;
-	}
 }
 
 @end
