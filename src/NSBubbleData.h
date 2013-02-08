@@ -12,6 +12,12 @@
 #import "BubbleTypes.h"
 #import "Comment.h"
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000 // iOS 6.0 or later
+#define LINEBREAKMODE 0
+#else                                         // iOS 5.X or earlier
+#define LINEBREAKMODE 1
+#endif
+
 @interface NSBubbleData : NSObject
 
 @property (readonly, nonatomic, strong) NSDate *date;

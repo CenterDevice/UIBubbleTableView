@@ -46,7 +46,11 @@
 	self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [UIBubbleHeaderTableViewCell height])];
 	self.label.text = commentHeader;
     self.label.font = [UIFont boldSystemFontOfSize:12];
+#if LINEBREAKMODE
+    self.label.textAlignment = UITextAlignmentCenter;
+#else
     self.label.textAlignment = NSTextAlignmentCenter;
+#endif
     self.label.shadowOffset = CGSizeMake(0, 1);
     self.label.shadowColor = [UIColor whiteColor];
     self.label.textColor = [UIColor darkGrayColor];
