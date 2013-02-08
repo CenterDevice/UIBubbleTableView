@@ -203,7 +203,7 @@
         if (cell == nil) cell = [[UIBubbleHeaderTableViewCell alloc] init];
 
 		[cell setAuthor:data.author andDate:data.date type:data.type];
-		cell.textLabel.textAlignment = UITextAlignmentCenter;
+		cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.shouldIndentWhileEditing = NO;
         return cell;
     }

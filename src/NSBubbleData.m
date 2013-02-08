@@ -23,6 +23,7 @@
 @synthesize author = _author;
 @synthesize comment = _comment;
 
+static NSUInteger maxContentWidth = 400;
 
 -(NSString *)description {
 	return [NSString stringWithFormat:@"comment id : %@, text : %@", _comment.commentId, _comment.text];
@@ -39,7 +40,7 @@
     _view = nil;
 	[_author release];
 	_author = nil;
-    
+
     self.avatar = nil;
 
     [super dealloc];
@@ -57,7 +58,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
     return [[[NSBubbleData alloc] initWithText:text date:date type:type] autorelease];
 #else
     return [[NSBubbleData alloc] initWithText:text date:date type:type];
-#endif    
+#endif
 }
 
 + (id)dataWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type {
@@ -79,15 +80,15 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 
 -(id)initWithComment:(Comment *)comment type:(NSBubbleType)type {
     UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(220, 9999) lineBreakMode:UILineBreakModeWordWrap];
-    
+    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode: NSLineBreakByWordWrapping];
+
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     label.numberOfLines = 0;
-    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
     label.text = (comment.text ? comment.text : @"");
     label.font = font;
     label.backgroundColor = [UIColor clearColor];
-    
+
     UIEdgeInsets insets = (type == BubbleTypeMine ? textInsetsMine : textInsetsSomeone);
 	return [self initWithView:label comment:comment type:type insets:insets];
 }
@@ -97,7 +98,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
     if (self)
     {
         _view = view;
-        _date = [self lastDateOfComment:comment];
+        _date = comment.creationDate;
 		_author = comment.author.name;
 		_comment = comment;
         _type = type;
@@ -108,19 +109,19 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 
 - (id)initWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type {
     UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    CGSize size = [(text ? text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(220, 9999) lineBreakMode:UILineBreakModeWordWrap];
-    
+    CGSize size = [(text ? text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode:NSLineBreakByWordWrapping];
+
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     label.numberOfLines = 0;
-    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
     label.text = (text ? text : @"");
     label.font = font;
     label.backgroundColor = [UIColor clearColor];
-    
+
 #if !__has_feature(objc_arc)
     [label autorelease];
 #endif
-    
+
     UIEdgeInsets insets = (type == BubbleTypeMine ? textInsetsMine : textInsetsSomeone);
 	return [self initWithView:label date:date author:author type:type insets:insets];
 }
@@ -142,19 +143,19 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 - (id)initWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type
 {
     UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    CGSize size = [(text ? text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(220, 9999) lineBreakMode:UILineBreakModeWordWrap];
-    
+    CGSize size = [(text ? text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode:NSLineBreakByWordWrapping];
+
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     label.numberOfLines = 0;
-    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
     label.text = (text ? text : @"");
     label.font = font;
     label.backgroundColor = [UIColor clearColor];
-    
+
 #if !__has_feature(objc_arc)
     [label autorelease];
 #endif
-    
+
     UIEdgeInsets insets = (type == BubbleTypeMine ? textInsetsMine : textInsetsSomeone);
     return [self initWithView:label date:date type:type insets:insets];
 }
@@ -170,24 +171,24 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
     return [[[NSBubbleData alloc] initWithImage:image date:date type:type] autorelease];
 #else
     return [[NSBubbleData alloc] initWithImage:image date:date type:type];
-#endif    
+#endif
 }
 
 - (id)initWithImage:(UIImage *)image date:(NSDate *)date type:(NSBubbleType)type
 {
     CGSize size = image.size;
-    if (size.width > 220)
+    if (size.width > maxContentWidth)
     {
-        size.height /= (size.width / 220);
-        size.width = 220;
+        size.height /= (size.width / maxContentWidth);
+        size.width = maxContentWidth;
     }
-    
+
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     imageView.image = image;
     imageView.layer.cornerRadius = 5.0;
     imageView.layer.masksToBounds = YES;
 
-    
+
 #if !__has_feature(objc_arc)
     [imageView autorelease];
 #endif
@@ -204,7 +205,7 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
     return [[[NSBubbleData alloc] initWithView:view date:date type:type insets:insets] autorelease];
 #else
     return [[NSBubbleData alloc] initWithView:view date:date type:type insets:insets];
-#endif    
+#endif
 }
 
 
