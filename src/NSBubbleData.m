@@ -192,9 +192,9 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
 #if !__has_feature(objc_arc)
     [imageView autorelease];
 #endif
-    
+
     UIEdgeInsets insets = (type == BubbleTypeMine ? imageInsetsMine : imageInsetsSomeone);
-    return [self initWithView:imageView date:date type:type insets:insets];       
+    return [self initWithView:imageView date:date type:type insets:insets];
 }
 
 #pragma mark - Custom view bubble
@@ -209,7 +209,7 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
 }
 
 
-- (id)initWithView:(UIView *)view date:(NSDate *)date type:(NSBubbleType)type insets:(UIEdgeInsets)insets  
+- (id)initWithView:(UIView *)view date:(NSDate *)date type:(NSBubbleType)type insets:(UIEdgeInsets)insets
 {
     self = [super init];
     if (self)
@@ -225,23 +225,6 @@ const UIEdgeInsets imageInsetsSomeone = {11, 18, 16, 14};
         _insets = insets;
     }
     return self;
-}
-
-
-//compare creation and edit date of the comment and return the last one
--(NSDate *)lastDateOfComment:(Comment *)comment {
-	NSDate* creationDate = comment.creationDate;
-	NSDate* editDate = comment.editDate;
-	switch ([creationDate compare:editDate]) {
-		case NSOrderedAscending:
-			comment.editDate = editDate;
-			return editDate;
-			break;
-		default:
-			comment.creationDate = creationDate;
-			return creationDate;
-			break;
-	}
 }
 
 @end

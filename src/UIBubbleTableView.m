@@ -36,23 +36,23 @@
 - (void)initializator
 {
     // UITableView properties
-    
+
     self.backgroundColor = [UIColor clearColor];
     self.separatorStyle = UITableViewCellSeparatorStyleNone;
     assert(self.style == UITableViewStylePlain);
-	
+
     self.delegate = self;
     self.dataSource = self;
-    
+
     // UIBubbleTableView default properties
-    
+
     self.typingBubble = NSBubbleTypingTypeNobody;
-	
+
 	//add padding at bottom after last comment
 	CGFloat bottomPadding = 44;
 	UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, bottomPadding, 0);
 	[self setContentInset:insets];
-	
+
 }
 
 - (id)init
@@ -90,47 +90,47 @@
 {
     self.showsVerticalScrollIndicator = NO;
     self.showsHorizontalScrollIndicator = NO;
-    
+
     // Cleaning up
 	self.bubbleSection = nil;
-    
+
     // Loading new data
     int count = 0;
 
     self.bubbleSection = [[NSMutableArray alloc] init];
-    
+
     if (self.bubbleDataSource && (count = [self.bubbleDataSource rowsForBubbleTable:self]) > 0)
     {
         NSMutableArray *bubbleData = [[NSMutableArray alloc] initWithCapacity:count];
-        
+
         for (int i = 0; i < count; i++)
         {
             NSObject *object = [self.bubbleDataSource bubbleTableView:self dataForRow:i];
             assert([object isKindOfClass:[NSBubbleData class]]);
             [bubbleData addObject:object];
         }
-        
+
         [bubbleData sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
          {
              NSBubbleData *bubbleData1 = (NSBubbleData *)obj1;
              NSBubbleData *bubbleData2 = (NSBubbleData *)obj2;
-             
-             return [bubbleData1.date compare:bubbleData2.date];            
+
+             return [bubbleData1.date compare:bubbleData2.date];
          }];
-        
+
         NSMutableArray *currentSection = nil;
-        
+
         for (int i = 0; i < count; i++)
         {
             NSBubbleData *data = (NSBubbleData *)[bubbleData objectAtIndex:i];
 
                 currentSection = [[NSMutableArray alloc] init];
                 [self.bubbleSection addObject:currentSection];
-            
+
             [currentSection addObject:data];
         }
     }
-    
+
     [super reloadData];
 }
 
@@ -155,7 +155,7 @@
 {
     // This is for now typing bubble
 	if (section >= [self.bubbleSection count]) return 1;
-    
+
     return [[self.bubbleSection objectAtIndex:section] count] + 1;
 }
 
@@ -166,13 +166,13 @@
     {
         return MAX([UIBubbleTypingTableViewCell height], self.showAvatars ? 52 : 0);
     }
-    
+
     // Header
     if (indexPath.row == 0)
     {
         return [UIBubbleHeaderTableViewCell height];
     }
-    
+
     NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:indexPath.row - 1];
     return MAX(data.insets.top + data.view.frame.size.height + data.insets.bottom, self.showAvatars ? 52 : 0);
 }
@@ -184,7 +184,7 @@
     {
         static NSString *cellId = @"tblBubbleTypingCell";
         UIBubbleTypingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
-        
+
         if (cell == nil) cell = [[UIBubbleTypingTableViewCell alloc] init];
 
         cell.type = self.typingBubble;
@@ -199,7 +199,7 @@
         static NSString *cellId = @"tblBubbleHeaderCell";
         UIBubbleHeaderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
         NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:0];
-        
+
         if (cell == nil) cell = [[UIBubbleHeaderTableViewCell alloc] init];
 
 		[cell setAuthor:data.author andDate:data.date type:data.type];
@@ -207,8 +207,8 @@
         cell.shouldIndentWhileEditing = NO;
         return cell;
     }
-    
-    // Standard bubble    
+
+    // Standard bubble
     static NSString *cellId = @"tblBubbleCell";
     UIBubbleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     NSBubbleData *data = [[self.bubbleSection objectAtIndex:indexPath.section] objectAtIndex:indexPath.row - 1];
@@ -247,7 +247,7 @@
 		NSBubbleData* bubleData = self.bubbleSection[indexPath.section][0];
 		[self.bubbleSection removeObjectAtIndex:indexPath.section];
 		[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
-		[self.bubbleDataSource updateDataSource:bubleData]; 
+		[self.bubbleDataSource updateDataSource:bubleData];
     }
 }
 
