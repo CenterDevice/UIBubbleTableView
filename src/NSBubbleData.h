@@ -10,7 +10,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BubbleTypes.h"
-#import "Comment.h"
+#import "CDComment.h"
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000 // iOS 6.0 or later
 #define LINEBREAKMODE 0
@@ -26,7 +26,7 @@
 @property (readonly, nonatomic, strong) UIView *view;
 @property (readonly, nonatomic) UIEdgeInsets insets;
 @property (nonatomic, strong) UIImage *avatar;
-@property (nonatomic, strong) Comment* comment;
+@property (nonatomic, strong) CDComment* comment;
 
 - (id)initWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type;
 + (id)dataWithText:(NSString *)text date:(NSDate *)date type:(NSBubbleType)type;
@@ -39,6 +39,6 @@
 - (id)initWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type;
 + (id)dataWithText:(NSString *)text date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type;
 - (id)initWithView:(UIView *)view date:(NSDate *)date author:(NSString *)author type:(NSBubbleType)type insets:(UIEdgeInsets)insets;
-- (id)dataWithComment:(Comment *)comment type:(NSBubbleType)type;
+- (id)dataWithComment:(CDComment *)comment type:(NSBubbleType)type;
 
 @end

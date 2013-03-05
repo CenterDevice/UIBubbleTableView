@@ -61,7 +61,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 	return [[NSBubbleData alloc] initWithText:text date:date author:author type:type];
 }
 
-- (id)dataWithComment:(Comment *)aComment type:(NSBubbleType)type {
+- (id)dataWithComment:(CDComment *)aComment type:(NSBubbleType)type {
 	if (type == BubbleTypeMine) {
 		aComment.myComment = YES;
 	}else {
@@ -70,7 +70,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 	return [self initWithComment:aComment type:type];
 }
 
--(id)initWithComment:(Comment *)comment type:(NSBubbleType)type {
+-(id)initWithComment:(CDComment *)comment type:(NSBubbleType)type {
     UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
 #if LINEBREAKMODE
 	    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode: UILineBreakModeWordWrap];
@@ -93,7 +93,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 	return [self initWithView:label comment:comment type:type insets:insets];
 }
 
-- (id)initWithView:(UIView *)view comment:(Comment *)comment type:(NSBubbleType)type insets:(UIEdgeInsets)insets {
+- (id)initWithView:(UIView *)view comment:(CDComment *)comment type:(NSBubbleType)type insets:(UIEdgeInsets)insets {
 	self = [super init];
     if (self)
     {

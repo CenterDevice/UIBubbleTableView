@@ -13,8 +13,8 @@
 #import "UIBubbleHeaderTableViewCell.h"
 #import "UIBubbleTypingTableViewCell.h"
 #import "CDContext.h"
-#import "User.h"
-#import "Comment.h"
+#import "CDUser.h"
+#import "CDComment.h"
 
 @interface UIBubbleTableView ()
 
