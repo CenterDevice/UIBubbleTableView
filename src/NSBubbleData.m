@@ -9,6 +9,7 @@
 //
 
 #import "NSBubbleData.h"
+#import "CDUser.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation NSBubbleData
