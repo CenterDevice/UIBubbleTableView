@@ -100,7 +100,7 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
     {
         _view = view;
         _date = comment.creationDate;
-		_author = comment.author.name;
+		_author = [NSString stringWithFormat:@"%@ %@", comment.author.firstName, comment.author.lastName];
 		_comment = comment;
         _type = type;
         _insets = insets;
