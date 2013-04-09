@@ -8,8 +8,10 @@
 //  To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/
 //
 
-#import "NSBubbleData.h"
 #import <QuartzCore/QuartzCore.h>
+
+#import "NSBubbleData.h"
+#import "CDUser.h"
 
 @implementation NSBubbleData
 
