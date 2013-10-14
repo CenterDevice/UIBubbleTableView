@@ -74,13 +74,35 @@ const UIEdgeInsets textInsetsSomeone = {5, 15, 11, 10};
 
 -(id)initWithComment:(CDComment *)comment type:(NSBubbleType)type {
     UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    UILabel *label;
 #if LINEBREAKMODE
 	    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode: UILineBreakModeWordWrap];
 #else
-    CGSize size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode: NSLineBreakByWordWrapping];
+    CGSize size = CGSizeZero;
+    CGRect labelRect = CGRectZero;
+    if (SYSTEM_VERSION_LESS_THAN(7.0))
+    {
+        size = [(comment.text ? comment.text : @"") sizeWithFont:font constrainedToSize:CGSizeMake(maxContentWidth, 9999) lineBreakMode: NSLineBreakByWordWrapping];
+        label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    }
+    else
+    {
+        // [sizeWithFont:constrainedToSize:lineBreakMode:] is deprecated in IOS7 so,
+        // [boundingRectWithSize:options:attributes:context:] should be used
+        NSDictionary *stringAttributes = @{ NSFontAttributeName : font};
+        labelRect = [(comment.text ? comment.text : @"") boundingRectWithSize:CGSizeMake(maxContentWidth, 0.0)
+                                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                                   attributes:stringAttributes
+                                                                      context:nil];
+        // Round to the first biggest integer value
+        labelRect = (CGRect) {
+            .origin = labelRect.origin,
+            .size = CGSizeMake(ceilf(labelRect.size.width), ceilf(labelRect.size.height))
+        };
+        label = [[UILabel alloc] initWithFrame:labelRect];
+    }
+    
 #endif
-
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     label.numberOfLines = 0;
 #if LINEBREAKMODE
     label.lineBreakMode = UILineBreakModeWordWrap;
